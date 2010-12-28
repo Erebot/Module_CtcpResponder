@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid ""
+"<var name=\"user\"/>@<var name=\"host\"/> (started <var name=\"uptime\"/> ago)"
+msgstr ""
+"<var name=\"user\"/>@<var name=\"host\"/> (started <var name=\"uptime\"/> ago)"
+
+#
+msgid "No error"
+msgstr "No error"

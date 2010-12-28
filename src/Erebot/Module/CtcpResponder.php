@@ -67,12 +67,17 @@ extends Erebot_Module_Base
             case 'FINGER':
                 $bot            =&  $this->_connection->getBot();
                 $runningTime    =   $bot->getRunningTime();
-                if ($runningTime !== FALSE)
-                    $runningTime =
-                        ' (started '.
-                        $translator->formatDuration($runningTime).
-                        ' ago)';
-                $response = get_current_user().'@'.php_uname('n').$runningTime;
+                $uptime = ($runningTime === FALSE ? '???' :
+                    $translator->formatDuration($runningTime));
+                $msg = $translator->gettext(
+                    '<var name="user"/>@<var name="host"/> (started '.
+                    '<var name="uptime"/> ago)'
+                );
+                $formatter = new Erebot_Styling($msg, $translator);
+                $formatter->assign('user',      get_current_user());
+                $formatter->assign('host',      php_uname('n'));
+                $formatter->assign('uptime',    $uptime);
+                $response = $formatter->render();
                 break;
 
             case 'VERSION':
@@ -97,7 +102,7 @@ extends Erebot_Module_Base
                 if ($hasPosix)
                     $response = posix_strerror(posix_errno());
                 else
-                    $response = "No error";
+                    $response = $translator->gettext("No error");
                 break;
 
             case 'PING':
