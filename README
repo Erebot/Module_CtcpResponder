@@ -1,0 +1,7 @@
+Respond to CTCP messages
+
+This module receives CTCP requests and responds with CTCP responses.
+The response can be a default one (as implemented by this module) or
+a static text (based on configuration).
+You may also suppress the response entirely by setting the associated
+static text to "" (an empty string).
