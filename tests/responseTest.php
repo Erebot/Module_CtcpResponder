@@ -81,7 +81,7 @@ extends ErebotModuleTestCase
         $this->assertSame(0, count($this->_outputBuffer));
     }
 
-    public function testDefaultResponse()
+    public function testDefaultResponses()
     {
         $this->_networkConfig
             ->expects($this->any())
@@ -89,20 +89,26 @@ extends ErebotModuleTestCase
             ->will($this->throwException(
                 new Erebot_NotFoundException('Not found')
             ));
-        $event = new Erebot_Event_PrivateCtcp(
-            $this->_connection,
-            'foo',
+        $queries = array(
+            'FINGER',
+            'VERSION',
             'SOURCE',
-            'foobar'
+            'CLIENTINFO',
+            'ERRMSG',
+            'PING',
+            'TIME',
         );
-        // The event deals with a SOURCE CTCP request.
-        // We simply check the results.
-        $this->_module->handleCtcp($event);
-        $this->assertSame(1, count($this->_outputBuffer));
-        $this->assertEquals(
-            "NOTICE foo :\001SOURCE http://pear.erebot.net/\001",
-            $this->_outputBuffer[0]
-        );
+        foreach ($queries as $query) {
+            $event = new Erebot_Event_PrivateCtcp(
+                $this->_connection,
+                'foo',
+                $query,
+                'foobar'
+            );
+            $this->_module->handleCtcp($event);
+            $this->assertSame(1, count($this->_outputBuffer));
+            $this->_outputBuffer = array();
+        }
     }
 
     public function testStaticResponse()
