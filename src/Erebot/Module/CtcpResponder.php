@@ -100,10 +100,18 @@ extends Erebot_Module_Base
 
             case 'ERRMSG':
                 $hasPosix = in_array('posix', get_loaded_extensions());
-                if ($hasPosix)
+                // Latest error detected by PHP.
+                if (isset($php_errormsg))
+                    $response = $php_errormsg;
+
+                // Latest low-level (POSIX) error.
+                else if ($hasPosix)
                     $response = posix_strerror(posix_errno());
+
+                // Nothing to worry about.
                 else
                     $response = $translator->gettext("No error");
+
                 break;
 
             case 'PING':
