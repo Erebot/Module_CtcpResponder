@@ -45,7 +45,7 @@ extends ErebotModuleTestCase
 
     public function testUnknownType()
     {
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
@@ -65,7 +65,7 @@ extends ErebotModuleTestCase
 
     public function testIgnoredType()
     {
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseString')
             ->will($this->returnValue(''));
@@ -83,7 +83,7 @@ extends ErebotModuleTestCase
 
     public function testDefaultResponses()
     {
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
@@ -114,7 +114,7 @@ extends ErebotModuleTestCase
     public function testStaticResponse()
     {
         $response = 'And the unknown becomes reknown';
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseString')
             ->will($this->returnValue($response));
@@ -137,13 +137,13 @@ extends ErebotModuleTestCase
 
     public function testChannelResponses()
     {
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
                 new Erebot_NotFoundException('Not found')
             ));
-        $this->_networkConfig
+        $this->_serverConfig
             ->expects($this->any())
             ->method('parseBool')
             ->will($this->onConsecutiveCalls(FALSE, TRUE));
