@@ -30,11 +30,11 @@ extends ErebotModuleTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->_module = new Erebot_Module_CtcpResponder(
+        $this->_module = new Erebot_Module_CtcpResponder(NULL);
+        $this->_module->reload(
             $this->_connection,
-            NULL
+            Erebot_Module_Base::RELOAD_ALL
         );
-        $this->_module->reload(Erebot_Module_Base::RELOAD_ALL);
     }
 
     public function tearDown()
