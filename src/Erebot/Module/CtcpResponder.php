@@ -24,7 +24,7 @@ extends Erebot_Module_Base
         if ($flags & self::RELOAD_HANDLERS) {
             $handler = new Erebot_EventHandler(
                 array($this, 'handleCtcp'),
-                new Erebot_Event_Match_InstanceOf('Erebot_Interface_Event_CtcpMessage')
+                new Erebot_Event_Match_InstanceOf('Erebot_Interface_Event_Base_CtcpMessage')
             );
             $this->_connection->addEventHandler($handler);
         }
@@ -34,9 +34,9 @@ extends Erebot_Module_Base
     {
     }
 
-    public function handleCtcp(Erebot_Interface_Event_CtcpMessage &$event)
+    public function handleCtcp(Erebot_Interface_Event_Base_CtcpMessage &$event)
     {
-        if ($event instanceof Erebot_Interface_Event_Private) {
+        if ($event instanceof Erebot_Interface_Event_Base_Private) {
             $target = $event->getSource();
             $chan   = NULL;
         }
