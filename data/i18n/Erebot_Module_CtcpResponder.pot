@@ -1,6 +1,0 @@
-msgid   "<var name=\"user\"/>@<var name=\"host\"/> (started <var name=\"uptime"
-        "\"/> ago)"
-msgstr  ""
-#
-msgid   "No error"
-msgstr  ""
