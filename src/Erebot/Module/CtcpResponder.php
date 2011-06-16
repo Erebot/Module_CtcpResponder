@@ -16,9 +16,14 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * \brief
+ *      A module that responds to CTCP requests.
+ */
 class   Erebot_Module_CtcpResponder
 extends Erebot_Module_Base
 {
+    /// \copydoc Erebot_Module_Base::_reload()
     public function _reload($flags)
     {
         if ($flags & self::RELOAD_HANDLERS) {
@@ -30,10 +35,28 @@ extends Erebot_Module_Base
         }
     }
 
+    /// \copydoc Erebot_Module_Base::_unload()
     protected function _unload()
     {
     }
 
+    /**
+     * Handles CTCP requests.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \note
+     *      The following types of CTCP requests are
+     *      currently supported:
+     *      - FINGER
+     *      - VERSION
+     *      - SOURCE
+     *      - CLIENTINFO
+     *      - ERRMSG
+     *      - PING
+     *      - TIME
+     */
     public function handleCtcp(Erebot_Interface_Event_Base_CtcpMessage $event)
     {
         if ($event instanceof Erebot_Interface_Event_Base_Private) {
