@@ -59,7 +59,10 @@ extends Erebot_Module_Base
      *      - PING
      *      - TIME
      */
-    public function handleCtcp(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function handleCtcp(
+        Erebot_Interface_EventHandler           $handler,
+        Erebot_Interface_Event_Base_CtcpMessage $event
+    )
     {
         if ($event instanceof Erebot_Interface_Event_Base_Private) {
             $target = $event->getSource();
