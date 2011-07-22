@@ -59,7 +59,7 @@ extends ErebotModuleTestCase
         );
         // The event deals with an UNKNOWN CTCP request
         // and must therefore be ignored.
-        $this->_module->handleCtcp($event);
+        $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
     }
 
@@ -77,7 +77,7 @@ extends ErebotModuleTestCase
         );
         // The event deals with a CTCP request
         // which was configured to be ignored.
-        $this->_module->handleCtcp($event);
+        $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
     }
 
@@ -105,7 +105,7 @@ extends ErebotModuleTestCase
                 $query,
                 'foobar'
             );
-            $this->_module->handleCtcp($event);
+            $this->_module->handleCtcp($this->_eventHandler, $event);
             $this->assertSame(1, count($this->_outputBuffer));
             $this->_outputBuffer = array();
         }
@@ -127,7 +127,7 @@ extends ErebotModuleTestCase
         // The event deals with an UNKNOWN CTCP request,
         // which was configured to get an answer.
         // We check that answer.
-        $this->_module->handleCtcp($event);
+        $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
             "NOTICE foo :\001UNKNOWN $response\001",
@@ -157,7 +157,7 @@ extends ErebotModuleTestCase
         );
         // The event deals with a chan CTCP request,
         // which is forbidden here.
-        $this->_module->handleCtcp($event);
+        $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
 
         // Now, we make the same test, but this time
@@ -169,7 +169,7 @@ extends ErebotModuleTestCase
             'SOURCE',
             'foobar'
         );
-        $this->_module->handleCtcp($event);
+        $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
             "NOTICE #test :\001SOURCE http://pear.erebot.net/\001",
