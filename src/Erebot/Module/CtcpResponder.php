@@ -116,7 +116,7 @@ extends Erebot_Module_Base
             case 'VERSION':
                 $bot =& $this->_connection->getBot();
                 $response =
-                    $bot->getVersion().' / '.
+                    $bot->getVersion().' ($Rev$) / '.
                     'PHP '.PHP_VERSION.' / '.
                     php_uname('s').' '.php_uname('r');
                 unset($bot);
