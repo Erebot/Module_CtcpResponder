@@ -106,7 +106,8 @@ extends Erebot_Module_Base
                     '<var name="user"/>@<var name="host"/> (started '.
                     '<var name="uptime"/> ago)'
                 );
-                $formatter = new Erebot_Styling($msg, $translator);
+                $cls = $this->getFactory('!Styling');
+                $formatter = new $cls($msg, $translator);
                 $formatter->assign('user',      get_current_user());
                 $formatter->assign('host',      php_uname('n'));
                 $formatter->assign('uptime',    $uptime);

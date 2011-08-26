@@ -16,25 +16,47 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once(
-    dirname(__FILE__) .
-    DIRECTORY_SEPARATOR . 'testenv' .
-    DIRECTORY_SEPARATOR . 'bootstrap.php'
-);
-
 class   CtcpResponderTest
 extends ErebotModuleTestCase
 {
     protected $_module = NULL;
 
+    protected function _mockCtcp($source, $query, $text)
+    {
+        $event = $this->getMock(
+            'Erebot_Interface_Event_PrivateCtcp',
+            array(), array(), '', FALSE, FALSE
+        );
+
+        $event
+            ->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue($this->_connection));
+        $event
+            ->expects($this->any())
+            ->method('getSource')
+            ->will($this->returnValue($source));
+        $event
+            ->expects($this->any())
+            ->method('getCtcpType')
+            ->will($this->returnValue($query));
+        $event
+            ->expects($this->any())
+            ->method('getText')
+            ->will($this->returnValue($text));
+        return $event;
+    }
+
     public function setUp()
     {
         parent::setUp();
-        $this->_module = new Erebot_Module_CtcpResponder(NULL);
-        $this->_module->reload(
-            $this->_connection,
-            Erebot_Module_Base::RELOAD_ALL
+        $styling = $this->getMockForAbstractClass(
+            'StylingStub',
+            array(), '', FALSE, FALSE
         );
+        $this->_module = new Erebot_Module_CtcpResponder(NULL);
+        $this->_module->setFactory('!Styling', get_class($styling));
+        $this->_module->reload($this->_connection, 0);
     }
 
     public function tearDown()
@@ -51,14 +73,10 @@ extends ErebotModuleTestCase
             ->will($this->throwException(
                 new Erebot_NotFoundException('Not found')
             ));
-        $event = new Erebot_Event_PrivateCtcp(
-            $this->_connection,
-            'foo',
-            'UNKNOWN',
-            'foobar'
-        );
+
         // The event deals with an UNKNOWN CTCP request
         // and must therefore be ignored.
+        $event = $this->_mockCtcp('foo', 'UNKNOWN', 'foobar');
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
     }
@@ -69,14 +87,10 @@ extends ErebotModuleTestCase
             ->expects($this->any())
             ->method('parseString')
             ->will($this->returnValue(''));
-        $event = new Erebot_Event_PrivateCtcp(
-            $this->_connection,
-            'foo',
-            'VERSION',
-            'foobar'
-        );
+
         // The event deals with a CTCP request
         // which was configured to be ignored.
+        $event = $this->_mockCtcp('foo', 'VERSION', 'foobar');
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
     }
@@ -99,12 +113,7 @@ extends ErebotModuleTestCase
             'TIME',
         );
         foreach ($queries as $query) {
-            $event = new Erebot_Event_PrivateCtcp(
-                $this->_connection,
-                'foo',
-                $query,
-                'foobar'
-            );
+            $event = $this->_mockCtcp('foo', $query, 'foobar');
             $this->_module->handleCtcp($this->_eventHandler, $event);
             $this->assertSame(1, count($this->_outputBuffer));
             $this->_outputBuffer = array();
@@ -118,15 +127,11 @@ extends ErebotModuleTestCase
             ->expects($this->any())
             ->method('parseString')
             ->will($this->returnValue($response));
-        $event = new Erebot_Event_PrivateCtcp(
-            $this->_connection,
-            'foo',
-            'UNKNOWN',
-            'foobar'
-        );
+
         // The event deals with an UNKNOWN CTCP request,
         // which was configured to get an answer.
         // We check that answer.
+        $event = $this->_mockCtcp('foo', 'UNKNOWN', 'foobar');
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
@@ -148,27 +153,39 @@ extends ErebotModuleTestCase
             ->method('parseBool')
             ->will($this->onConsecutiveCalls(FALSE, TRUE));
 
-        $event = new Erebot_Event_ChanCtcp(
-            $this->_connection,
-            '#test',
-            'foo',
-            'SOURCE',
-            'foobar'
+        $event = $this->getMock(
+            'Erebot_Interface_Event_ChanCtcp',
+            array(), array(), '', FALSE, FALSE
         );
+        $event
+            ->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue($this->_connection));
+        $event
+            ->expects($this->any())
+                ->method('getChan')
+                ->will($this->returnValue('#test'));
+        $event
+            ->expects($this->any())
+            ->method('getSource')
+            ->will($this->returnValue('foo'));
+        $event
+            ->expects($this->any())
+            ->method('getCtcpType')
+            ->will($this->returnValue('SOURCE'));
+        $event
+            ->expects($this->any())
+            ->method('getText')
+            ->will($this->returnValue('foobar'));
+
         // The event deals with a chan CTCP request,
         // which is forbidden here.
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(0, count($this->_outputBuffer));
 
         // Now, we make the same test, but this time
-        // chan-directed CTCP requests are allowed.
-        $event = new Erebot_Event_ChanCtcp(
-            $this->_connection,
-            '#test',
-            'foo',
-            'SOURCE',
-            'foobar'
-        );
+        // chan-directed CTCP requests are allowed
+        // (see mock object).
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
