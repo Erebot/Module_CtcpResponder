@@ -108,9 +108,9 @@ extends Erebot_Module_Base
                 );
                 $cls = $this->getFactory('!Styling');
                 $formatter = new $cls($msg, $translator);
-                $formatter->assign('user',      get_current_user());
-                $formatter->assign('host',      php_uname('n'));
-                $formatter->assign('uptime',    $uptime);
+                $formatter->assign('user', get_current_user());
+                $formatter->assign('host', php_uname('n'));
+                $formatter->assign('uptime', $uptime);
                 $response = $formatter->render();
                 break;
 
@@ -133,12 +133,8 @@ extends Erebot_Module_Base
 
             case 'ERRMSG':
                 $hasPosix = in_array('posix', get_loaded_extensions());
-                // Latest error detected by PHP.
-                if (isset($php_errormsg))
-                    $response = $php_errormsg;
-
                 // Latest low-level (POSIX) error.
-                else if ($hasPosix)
+                if ($hasPosix)
                     $response = posix_strerror(posix_errno());
 
                 // Nothing to worry about.
