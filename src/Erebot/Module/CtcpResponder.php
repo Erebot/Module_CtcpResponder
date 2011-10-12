@@ -115,7 +115,7 @@ extends Erebot_Module_Base
                 break;
 
             case 'VERSION':
-                $bot =& $this->_connection->getBot();
+                $bot = $this->_connection->getBot();
                 $response =
                     $bot->getVersion().' ($Rev$) / '.
                     'PHP '.PHP_VERSION.' / '.
