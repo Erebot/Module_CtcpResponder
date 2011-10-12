@@ -98,8 +98,8 @@ extends Erebot_Module_Base
         // http://www.irchelp.org/irchelp/rfc/ctcpspec.html
         switch ($ctcpType) {
             case 'FINGER':
-                $bot            =&  $this->_connection->getBot();
-                $runningTime    =   $bot->getRunningTime();
+                $bot            = $this->_connection->getBot();
+                $runningTime    = $bot->getRunningTime();
                 $uptime = ($runningTime === FALSE ? '???' :
                     $translator->formatDuration($runningTime));
                 $msg = $translator->gettext(
