@@ -73,7 +73,7 @@ extends Erebot_Module_Base
         else
             $target = $chan = $event->getChan();
 
-        $translator = $this->getTranslator($chan);
+        $fmt        = $this->getFormatter($chan);
         $ctcpType   = $event->getCtcpType();
         try {
             $response = $this->parseString('ctcp_'.$ctcpType);
@@ -101,23 +101,22 @@ extends Erebot_Module_Base
                 $bot            = $this->_connection->getBot();
                 $runningTime    = $bot->getRunningTime();
                 $uptime = ($runningTime === FALSE ? '???' :
-                    $translator->formatDuration($runningTime));
-                $msg = $translator->gettext(
+                    new Erebot_Styling_Duration($runningTime));
+                $response = $fmt->_(
                     '<var name="user"/>@<var name="host"/> (started '.
-                    '<var name="uptime"/> ago)'
+                    '<var name="uptime"/> ago)',
+                    array(
+                        'user' => get_current_user(),
+                        'host' => php_uname('n'),
+                        'uptime' => $uptime,
+                    )
                 );
-                $cls = $this->getFactory('!Styling');
-                $formatter = new $cls($msg, $translator);
-                $formatter->assign('user', get_current_user());
-                $formatter->assign('host', php_uname('n'));
-                $formatter->assign('uptime', $uptime);
-                $response = $formatter->render();
                 break;
 
             case 'VERSION':
                 $bot = $this->_connection->getBot();
                 $response =
-                    $bot->getVersion().' ($Rev$) / '.
+                    $bot->getVersion().' / '.
                     'PHP '.PHP_VERSION.' / '.
                     php_uname('s').' '.php_uname('r');
                 unset($bot);
@@ -139,7 +138,7 @@ extends Erebot_Module_Base
 
                 // Nothing to worry about.
                 else
-                    $response = $translator->gettext("No error");
+                    $response = $fmt->_("No error");
 
                 break;
 
