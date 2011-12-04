@@ -168,9 +168,10 @@ extends Erebot_Module_Base
         $fmt            = $this->getFormatter($chan);
         $bot            = $this->_connection->getBot();
         $runningTime    = $bot->getRunningTime();
+        $cls            = $this->getFactory('!Styling_Duration');
         $uptime         =   ($runningTime === FALSE)
                             ? '???'
-                            : new Erebot_Styling_Duration($runningTime);
+                            : new $cls($runningTime);
         $response = $fmt->_(
             '<var name="user"/>@<var name="host"/> (started '.
             '<var name="uptime"/> ago)',
