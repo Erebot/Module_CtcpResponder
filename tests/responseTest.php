@@ -16,6 +16,44 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class       CallableStub
+implements  Erebot_Interface_Callable
+{
+    protected $_callable;
+
+    public function __construct($callable)
+    {
+        $this->_callable = $callable;
+    }
+
+    public function invoke()
+    {
+        $args = func_get_args();
+        return call_user_func_array($this->_callable, $args);
+    }
+
+    public function invokeArgs(&$args)
+    {
+    }
+
+    public function __invoke()
+    {
+    }
+
+    public function getRepresentation()
+    {
+    }
+
+    public function getCallable()
+    {
+        return $this->_callable;
+    }
+
+    public function __toString()
+    {
+    }
+}
+
 class   CtcpResponderTest
 extends ErebotModuleTestCase
 {
@@ -56,7 +94,11 @@ extends ErebotModuleTestCase
         );
         $this->_module = new Erebot_Module_CtcpResponder(NULL);
         $this->_module->setFactory('!Styling', get_class($styling));
-        $this->_module->reload($this->_connection, 0);
+        $this->_module->setFactory('!Callable', 'CallableStub');
+        $this->_module->reload(
+            $this->_connection,
+            Erebot_Module_Base::RELOAD_MEMBERS
+        );
     }
 
     public function tearDown()
@@ -95,15 +137,9 @@ extends ErebotModuleTestCase
         $this->assertSame(0, count($this->_outputBuffer));
     }
 
-    public function testDefaultResponses()
+    public function typeProvider()
     {
-        $this->_serverConfig
-            ->expects($this->any())
-            ->method('parseString')
-            ->will($this->throwException(
-                new Erebot_NotFoundException('Not found')
-            ));
-        $queries = array(
+        $types = array(
             'FINGER',
             'VERSION',
             'SOURCE',
@@ -112,12 +148,32 @@ extends ErebotModuleTestCase
             'PING',
             'TIME',
         );
-        foreach ($queries as $query) {
-            $event = $this->_mockCtcp('foo', $query, 'foobar');
-            $this->_module->handleCtcp($this->_eventHandler, $event);
-            $this->assertSame(1, count($this->_outputBuffer));
-            $this->_outputBuffer = array();
-        }
+        $result = array();
+        foreach ($types as $type)
+            $result[] = array($type);
+        return $result;
+    }
+
+    /**
+     * @dataProvider typeProvider
+     */
+    public function testDefaultResponses($query)
+    {
+        $this->_serverConfig
+            ->expects($this->any())
+            ->method('parseString')
+            ->will($this->throwException(
+                new Erebot_NotFoundException('Not found')
+            ));
+        $this->_bot
+            ->expects($this->any())
+            ->method('getRunningTime')
+            ->will($this->returnValue(FALSE));
+
+        $event = $this->_mockCtcp('foo', $query, 'foobar');
+        $this->_module->handleCtcp($this->_eventHandler, $event);
+        $this->assertSame(1, count($this->_outputBuffer));
+        $this->_outputBuffer = array();
     }
 
     public function testStaticResponse()

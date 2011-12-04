@@ -23,6 +23,9 @@
 class   Erebot_Module_CtcpResponder
 extends Erebot_Module_Base
 {
+    /// Maps CTCP types to the callable returning a response for them.
+    protected $_supportedTypes = array();
+
     /// \copydoc Erebot_Module_Base::_reload()
     public function _reload($flags)
     {
@@ -34,6 +37,28 @@ extends Erebot_Module_Base
                 )
             );
             $this->_connection->addEventHandler($handler);
+        }
+
+        if ($flags & self::RELOAD_MEMBERS) {
+            // For more information on standard CTCP messages, see:
+            // http://www.irchelp.org/irchelp/rfc/ctcpspec.html
+            // We map each one of those to a "ctcp<TYPE>" method
+            // in this module.
+            $types = array(
+                'FINGER',
+                'VERSION',
+                'SOURCE',
+                'CLIENTINFO',
+                'ERRMSG',
+                'PING',
+                'TIME',
+            );
+            $callableCls = $this->getFactory('!Callable');
+            foreach ($types as $type) {
+                $this->_supportedTypes[$type] = new $callableCls(
+                    array($this, 'ctcp'.$type)
+                );
+            }
         }
     }
 
@@ -58,6 +83,9 @@ extends Erebot_Module_Base
      *      - ERRMSG
      *      - PING
      *      - TIME
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function handleCtcp(
         Erebot_Interface_EventHandler           $handler,
@@ -73,7 +101,6 @@ extends Erebot_Module_Base
         else
             $target = $chan = $event->getChan();
 
-        $fmt        = $this->getFormatter($chan);
         $ctcpType   = $event->getCtcpType();
         try {
             $response = $this->parseString('ctcp_'.$ctcpType);
@@ -94,61 +121,9 @@ extends Erebot_Module_Base
             );
         }
 
-        // For more information on valid CTCP messages, see:
-        // http://www.irchelp.org/irchelp/rfc/ctcpspec.html
-        switch ($ctcpType) {
-            case 'FINGER':
-                $bot            = $this->_connection->getBot();
-                $runningTime    = $bot->getRunningTime();
-                $uptime = ($runningTime === FALSE ? '???' :
-                    new Erebot_Styling_Duration($runningTime));
-                $response = $fmt->_(
-                    '<var name="user"/>@<var name="host"/> (started '.
-                    '<var name="uptime"/> ago)',
-                    array(
-                        'user' => get_current_user(),
-                        'host' => php_uname('n'),
-                        'uptime' => $uptime,
-                    )
-                );
-                break;
-
-            case 'VERSION':
-                $bot = $this->_connection->getBot();
-                $response =
-                    $bot->getVersion().' / '.
-                    'PHP '.PHP_VERSION.' / '.
-                    php_uname('s').' '.php_uname('r');
-                unset($bot);
-                break;
-
-            case 'SOURCE':
-                $response = "http://pear.erebot.net/";
-                break;
-
-            case 'CLIENTINFO':
-                $response = "http://www.erebot.net/";
-                break;
-
-            case 'ERRMSG':
-                $hasPosix = in_array('posix', get_loaded_extensions());
-                // Latest low-level (POSIX) error.
-                if ($hasPosix)
-                    $response = posix_strerror(posix_errno());
-
-                // Nothing to worry about.
-                else
-                    $response = $fmt->_("No error");
-
-                break;
-
-            case 'PING':
-                $response = (string) $event->getText();
-                break;
-
-            case 'TIME':
-                $response = date('r');
-                break;
+        if (isset($this->_supportedTypes[$ctcpType])) {
+            $callable = $this->_supportedTypes[$ctcpType];
+            $response = $callable->invoke($event);
         }
 
         if ($response !== NULL)
@@ -157,6 +132,159 @@ extends Erebot_Module_Base
                 $ctcpType.' '.$response,
                 'CTCPREPLY'
             );
+    }
+
+    /**
+     * Creates the answer for a CTCP FINGER request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpFINGER(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        $chan = ($event instanceof Erebot_Interface_Event_Base_Private)
+                ? NULL
+                : $event->getChan();
+
+        $fmt            = $this->getFormatter($chan);
+        $bot            = $this->_connection->getBot();
+        $runningTime    = $bot->getRunningTime();
+        $uptime         =   ($runningTime === FALSE)
+                            ? '???'
+                            : new Erebot_Styling_Duration($runningTime);
+        $response = $fmt->_(
+            '<var name="user"/>@<var name="host"/> (started '.
+            '<var name="uptime"/> ago)',
+            array(
+                'user' => get_current_user(),
+                'host' => php_uname('n'),
+                'uptime' => $uptime,
+            )
+        );
+        return $response;
+    }
+
+    /**
+     * Creates the answer for a CTCP VERSION request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpVERSION(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        $bot        = $this->_connection->getBot();
+        $response   =
+            $bot->getVersion().' / '.
+            'PHP '.PHP_VERSION.' / '.
+            php_uname('s').' '.php_uname('r');
+        return $response;
+    }
+
+    /**
+     * Creates the answer for a CTCP SOURCE request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpSOURCE(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        return "http://pear.erebot.net/";
+    }
+
+    /**
+     * Creates the answer for a CTCP CLIENTINFO request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpCLIENTINFO(
+        Erebot_Interface_Event_Base_CtcpMessage $event
+    )
+    {
+        return "http://www.erebot.net/";
+    }
+
+    /**
+     * Creates the answer for a CTCP ERRMSG request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpERRMSG(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        $hasPosix = in_array('posix', get_loaded_extensions());
+
+        // Latest low-level (POSIX) error.
+        if ($hasPosix)
+            $response = posix_strerror(posix_errno());
+
+        // Nothing to worry about.
+        else {
+            $chan = ($event instanceof Erebot_Interface_Event_Base_Private)
+                    ? NULL
+                    : $event->getChan();
+
+            $fmt = $this->getFormatter($chan);
+            $response = $fmt->_("No error");
+        }
+        return $response;
+    }
+
+    /**
+     * Creates the answer for a CTCP PING request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpPING(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        return (string) $event->getText();
+    }
+
+    /**
+     * Creates the answer for a CTCP TIME request.
+     *
+     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     *      CTCP request to handle.
+     *
+     * \retval string
+     *      Answer to that CTCP request.
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function ctcpTIME(Erebot_Interface_Event_Base_CtcpMessage $event)
+    {
+        return date('r');
     }
 }
 
