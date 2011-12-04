@@ -16,46 +16,8 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class       CallableStub
-implements  Erebot_Interface_Callable
-{
-    protected $_callable;
-
-    public function __construct($callable)
-    {
-        $this->_callable = $callable;
-    }
-
-    public function invoke()
-    {
-        $args = func_get_args();
-        return call_user_func_array($this->_callable, $args);
-    }
-
-    public function invokeArgs(&$args)
-    {
-    }
-
-    public function __invoke()
-    {
-    }
-
-    public function getRepresentation()
-    {
-    }
-
-    public function getCallable()
-    {
-        return $this->_callable;
-    }
-
-    public function __toString()
-    {
-    }
-}
-
 class   CtcpResponderTest
-extends ErebotModuleTestCase
+extends Erebot_Testenv_Module_TestCase
 {
     protected $_module = NULL;
 
@@ -87,14 +49,8 @@ extends ErebotModuleTestCase
 
     public function setUp()
     {
-        parent::setUp();
-        $styling = $this->getMockForAbstractClass(
-            'StylingStub',
-            array(), '', FALSE, FALSE
-        );
         $this->_module = new Erebot_Module_CtcpResponder(NULL);
-        $this->_module->setFactory('!Styling', get_class($styling));
-        $this->_module->setFactory('!Callable', 'CallableStub');
+        parent::setUp();
         $this->_module->reload(
             $this->_connection,
             Erebot_Module_Base::RELOAD_MEMBERS
