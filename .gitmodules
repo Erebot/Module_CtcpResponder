@@ -9,4 +9,4 @@
 	url = git://github.com/fpoirotte/Erebot_API.git
 [submodule "docs/src/generic"]
 	path = docs/src/generic
-	url = git@github.com:fpoirotte/Erebot_Module_Skeleton.wiki.git
+	url = git://github.com/fpoirotte/Erebot_Module_Skeleton.wiki.git
