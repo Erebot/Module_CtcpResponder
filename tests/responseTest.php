@@ -24,7 +24,7 @@ extends Erebot_Testenv_Module_TestCase
     protected function _mockCtcp($source, $query, $text)
     {
         $event = $this->getMock(
-            'Erebot_Interface_Event_PrivateCtcp',
+            '\\Erebot\\Interfaces\\Event\\PrivateCtcp',
             array(), array(), '', FALSE, FALSE
         );
 
@@ -49,17 +49,17 @@ extends Erebot_Testenv_Module_TestCase
 
     public function setUp()
     {
-        $this->_module = new Erebot_Module_CtcpResponder(NULL);
+        $this->_module = new \Erebot\Module\CtcpResponder(NULL);
         parent::setUp();
-        $this->_module->reload(
+        $this->_module->reloadModule(
             $this->_connection,
-            Erebot_Module_Base::RELOAD_MEMBERS
+            \Erebot\Module\Base::RELOAD_MEMBERS
         );
     }
 
     public function tearDown()
     {
-        $this->_module->unload();
+        $this->_module->unloadModule();
         parent::tearDown();
     }
 
@@ -69,7 +69,7 @@ extends Erebot_Testenv_Module_TestCase
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
-                new Erebot_NotFoundException('Not found')
+                new \Erebot\NotFoundException('Not found')
             ));
 
         // The event deals with an UNKNOWN CTCP request
@@ -119,7 +119,7 @@ extends Erebot_Testenv_Module_TestCase
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
-                new Erebot_NotFoundException('Not found')
+                new \Erebot\NotFoundException('Not found')
             ));
         $this->_bot
             ->expects($this->any())
@@ -158,7 +158,7 @@ extends Erebot_Testenv_Module_TestCase
             ->expects($this->any())
             ->method('parseString')
             ->will($this->throwException(
-                new Erebot_NotFoundException('Not found')
+                new \Erebot\NotFoundException('Not found')
             ));
         $this->_serverConfig
             ->expects($this->any())
@@ -166,7 +166,7 @@ extends Erebot_Testenv_Module_TestCase
             ->will($this->onConsecutiveCalls(FALSE, TRUE));
 
         $event = $this->getMock(
-            'Erebot_Interface_Event_ChanCtcp',
+            '\\Erebot\\Interfaces\\Event\\ChanCtcp',
             array(), array(), '', FALSE, FALSE
         );
         $event
@@ -201,7 +201,7 @@ extends Erebot_Testenv_Module_TestCase
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
-            "NOTICE #test :\001SOURCE http://pear.erebot.net/\001",
+            "NOTICE #test :\001SOURCE https://github.com/Erebot/Erebot_Module_CtcpResponder\001",
             $this->_outputBuffer[0]
         );
     }

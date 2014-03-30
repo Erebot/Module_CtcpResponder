@@ -16,21 +16,22 @@
     along with Erebot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+namespace Erebot\Module;
+
 /**
  * \brief
  *      A module that responds to CTCP requests.
  */
-class   Erebot_Module_CtcpResponder
-extends Erebot_Module_Base
+class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\HelpEnabled
 {
     /// Maps CTCP types to the callable returning a response for them.
-    protected $_supportedTypes = array();
+    protected $supportedTypes = array();
 
     /**
      * This method is called whenever the module is (re)loaded.
      *
      * \param int $flags
-     *      A bitwise OR of the Erebot_Module_Base::RELOAD_*
+     *      A bitwise OR of the Erebot::Module::Base::RELOAD_*
      *      constants. Your method should take proper actions
      *      depending on the value of those flags.
      *
@@ -38,16 +39,16 @@ extends Erebot_Module_Base
      *      See the documentation on individual RELOAD_*
      *      constants for a list of possible values.
      */
-    public function _reload($flags)
+    public function reload($flags)
     {
         if ($flags & self::RELOAD_HANDLERS) {
-            $handler = new Erebot_EventHandler(
-                new Erebot_Callable(array($this, 'handleCtcp')),
-                new Erebot_Event_Match_InstanceOf(
-                    'Erebot_Interface_Event_Base_CtcpMessage'
+            $handler = new \Erebot\EventHandler(
+                \Erebot\CallableWrapper::wrap(array($this, 'handleCtcp')),
+                new \Erebot\Event\Match\Type(
+                    '\\Erebot\\Interfaces\\Event\\Base\\CtcpMessage'
                 )
             );
-            $this->_connection->addEventHandler($handler);
+            $this->connection->addEventHandler($handler);
         }
 
         if ($flags & self::RELOAD_MEMBERS) {
@@ -64,27 +65,54 @@ extends Erebot_Module_Base
                 'PING',
                 'TIME',
             );
-            $callableCls = $this->getFactory('!Callable');
             foreach ($types as $type) {
-                $this->_supportedTypes[$type] = new $callableCls(
+                $this->supportedTypes[$type] = \Erebot\CallableWrapper::wrap(
                     array($this, 'ctcp'.$type)
                 );
             }
         }
     }
 
-    /// \copydoc Erebot_Module_Base::_unload()
-    protected function _unload()
-    {
+    /**
+     * Provides help about this module.
+     *
+     * \param Erebot::Interfaces::Event::Base_TextMessage $event
+     *      Some help request.
+     *
+     * \param Erebot::Interfaces::TextWrapper $words
+     *      Parameters passed with the request. This is the same
+     *      as this module's name when help is requested on the
+     *      module itself (in opposition with help on a specific
+     *      command provided by the module).
+     */
+    public function getHelp(
+        \Erebot\Interfaces\Event\Base\TextMessage $event,
+        \Erebot\Interfaces\TextWrapper $words
+    ) {
+        if ($event instanceof \Erebot\Interfaces\Event\Base\PrivateMessage) {
+            $target = $event->getSource();
+            $chan   = null;
+        } else {
+            $target = $chan = $event->getChan();
+        }
+
+        if (count($words) == 1 && $words[0] === get_called_class()) {
+            $msg = $this->getFormatter($chan)->_(
+                "This module does not provide any command, but ".
+                "it provides responses to CTCP requests."
+            );
+            $this->sendMessage($target, $msg);
+            return true;
+        }
     }
 
     /**
      * Handles CTCP requests.
      *
-     * \param Erebot_Interface_EventHandler $handler
+     * \param Erebot::Interfaces::EventHandler $handler
      *      Handler that triggered this event.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \note
@@ -102,31 +130,30 @@ extends Erebot_Module_Base
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function handleCtcp(
-        Erebot_Interface_EventHandler           $handler,
-        Erebot_Interface_Event_Base_CtcpMessage $event
-    )
-    {
-        if ($event instanceof Erebot_Interface_Event_Base_Private) {
+        \Erebot\Interfaces\EventHandler $handler,
+        \Erebot\Interfaces\Event\Base\CtcpMessage $event
+    ) {
+        if ($event instanceof \Erebot\Interfaces\Event\Base\PrivateMessage) {
             $target = $event->getSource();
-            $chan   = NULL;
-        }
-        else if (!$this->parseBool('allow_chan_ctcp', TRUE))
+            $chan   = null;
+        } elseif (!$this->parseBool('allow_chan_ctcp', true)) {
             return;
-        else
+        } else {
             $target = $chan = $event->getChan();
+        }
 
         $ctcpType   = $event->getCtcpType();
         try {
             $response = $this->parseString('ctcp_'.$ctcpType);
-        }
-        catch (Erebot_NotFoundException $e) {
-            $response = NULL;
+        } catch (\Erebot\NotFoundException $e) {
+            $response = null;
         }
 
-        if ($response !== NULL) {
+        if ($response !== null) {
             // Ignore this CTCP request.
-            if ($response == "")
+            if ($response == "") {
                 return;
+            }
 
             return $this->sendMessage(
                 $target,
@@ -135,23 +162,24 @@ extends Erebot_Module_Base
             );
         }
 
-        if (isset($this->_supportedTypes[$ctcpType])) {
-            $callable = $this->_supportedTypes[$ctcpType];
-            $response = $callable->invoke($event);
+        if (isset($this->supportedTypes[$ctcpType])) {
+            $callable = $this->supportedTypes[$ctcpType];
+            $response = $callable($event);
         }
 
-        if ($response !== NULL)
+        if ($response !== null) {
             return $this->sendMessage(
                 $target,
                 $ctcpType.' '.$response,
                 'CTCPREPLY'
             );
+        }
     }
 
     /**
      * Creates the answer for a CTCP FINGER request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -159,17 +187,17 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpFINGER(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpFINGER(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
-        $chan = ($event instanceof Erebot_Interface_Event_Base_Private)
-                ? NULL
+        $chan = ($event instanceof \Erebot\Interfaces\Event\Base\PrivateMessage)
+                ? null
                 : $event->getChan();
 
         $fmt            = $this->getFormatter($chan);
-        $bot            = $this->_connection->getBot();
+        $bot            = $this->connection->getBot();
         $runningTime    = $bot->getRunningTime();
-        $cls            = $this->getFactory('!Styling_Duration');
-        $uptime         =   ($runningTime === FALSE)
+        $cls            = $this->getFactory('!Styling\\Variables\\Duration');
+        $uptime         =   ($runningTime === false)
                             ? '???'
                             : new $cls($runningTime);
         $response = $fmt->_(
@@ -187,7 +215,7 @@ extends Erebot_Module_Base
     /**
      * Creates the answer for a CTCP VERSION request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -195,11 +223,10 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpVERSION(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpVERSION(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
-        $bot        = $this->_connection->getBot();
+        $bot        = $this->connection->getBot();
         $response   =
-            $bot->getVersion().' / '.
             'PHP '.PHP_VERSION.' / '.
             php_uname('s').' '.php_uname('r');
         return $response;
@@ -208,7 +235,7 @@ extends Erebot_Module_Base
     /**
      * Creates the answer for a CTCP SOURCE request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -216,15 +243,15 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpSOURCE(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpSOURCE(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
-        return "http://pear.erebot.net/";
+        return "https://github.com/Erebot/Erebot_Module_CtcpResponder";
     }
 
     /**
      * Creates the answer for a CTCP CLIENTINFO request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -232,9 +259,7 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpCLIENTINFO(
-        Erebot_Interface_Event_Base_CtcpMessage $event
-    )
+    public function ctcpCLIENTINFO(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
         return "http://www.erebot.net/";
     }
@@ -242,7 +267,7 @@ extends Erebot_Module_Base
     /**
      * Creates the answer for a CTCP ERRMSG request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -250,18 +275,17 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpERRMSG(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpERRMSG(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
         $hasPosix = in_array('posix', get_loaded_extensions());
 
         // Latest low-level (POSIX) error.
-        if ($hasPosix)
+        if ($hasPosix) {
             $response = posix_strerror(posix_errno());
-
-        // Nothing to worry about.
-        else {
-            $chan = ($event instanceof Erebot_Interface_Event_Base_Private)
-                    ? NULL
+        } else {
+            // Nothing to worry about.
+            $chan = ($event instanceof \Erebot\Interfaces\Event\Base\PrivateMessage)
+                    ? null
                     : $event->getChan();
 
             $fmt = $this->getFormatter($chan);
@@ -273,7 +297,7 @@ extends Erebot_Module_Base
     /**
      * Creates the answer for a CTCP PING request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -281,7 +305,7 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpPING(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpPING(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
         return (string) $event->getText();
     }
@@ -289,7 +313,7 @@ extends Erebot_Module_Base
     /**
      * Creates the answer for a CTCP TIME request.
      *
-     * \param Erebot_Interface_Event_Base_CtcpMessage $event
+     * \param Erebot::Interfaces::Event::Base::CtcpMessage $event
      *      CTCP request to handle.
      *
      * \retval string
@@ -297,9 +321,8 @@ extends Erebot_Module_Base
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function ctcpTIME(Erebot_Interface_Event_Base_CtcpMessage $event)
+    public function ctcpTIME(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
         return date('r');
     }
 }
-
