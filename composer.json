@@ -29,6 +29,9 @@
         "erebot/buildenv": "dev-master",
         "erebot/testenv": "dev-master"
     },
+    "suggest": {
+        "ext-posix": "*"
+    },
     "autoload": {
         "psr-4": {
             "Erebot\\Module\\": "src/"

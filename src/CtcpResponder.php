@@ -281,7 +281,7 @@ class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\He
 
         // Latest low-level (POSIX) error.
         if ($hasPosix) {
-            $response = posix_strerror(posix_errno());
+            $response = posix_strerror(posix_get_last_error());
         } else {
             // Nothing to worry about.
             $chan = ($event instanceof \Erebot\Interfaces\Event\Base\PrivateMessage)
