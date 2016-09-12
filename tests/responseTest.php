@@ -23,11 +23,7 @@ extends Erebot_Testenv_Module_TestCase
 
     protected function _mockCtcp($source, $query, $text)
     {
-        $event = $this->getMock(
-            '\\Erebot\\Interfaces\\Event\\PrivateCtcp',
-            array(), array(), '', FALSE, FALSE
-        );
-
+        $event = $this->getMockBuilder('\\Erebot\\Interfaces\\Event\\PrivateCtcp')->getMock();
         $event
             ->expects($this->any())
             ->method('getConnection')
@@ -165,10 +161,7 @@ extends Erebot_Testenv_Module_TestCase
             ->method('parseBool')
             ->will($this->onConsecutiveCalls(FALSE, TRUE));
 
-        $event = $this->getMock(
-            '\\Erebot\\Interfaces\\Event\\ChanCtcp',
-            array(), array(), '', FALSE, FALSE
-        );
+        $event = $this->getMockBuilder('\\Erebot\\Interfaces\\Event\\ChanCtcp')->getMock();
         $event
             ->expects($this->any())
             ->method('getConnection')
