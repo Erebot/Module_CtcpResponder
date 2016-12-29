@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011-2016, Erebot
+# This file is distributed under the same license as the Erebot_Module_CtcpResponder package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Erebot_Module_CtcpResponder 1.0.x-dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-29 22:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+#
+# File: ../src/index.rst, line: 10
+msgid "Welcome to the documentation for Erebot_Module_CtcpResponder!"
+msgstr "Welcome to the documentation for Erebot_Module_CtcpResponder!"
+#
+# File: ../src/index.rst, line: 12
+msgid ""
+"Erebot_Module_CtcpResponder is a module for `Erebot`_ that responds to :abbr:"
+"`CTCP (Client-To-Client Protocol)` requests."
+msgstr ""
+"Erebot_Module_CtcpResponder is a module for `Erebot`_ that responds to :abbr:"
+"`CTCP (Client-To-Client Protocol)` requests."
+#
+# File: ../src/index.rst, line: 15
+msgid "The following request types are currently supported by this module:"
+msgstr "The following request types are currently supported by this module:"
+#
+# File: ../src/index.rst, line: 17
+msgid "``FINGER``"
+msgstr "``FINGER``"
+#
+# File: ../src/index.rst, line: 18
+msgid "``VERSION``"
+msgstr "``VERSION``"
+#
+# File: ../src/index.rst, line: 19
+msgid "``SOURCE``"
+msgstr "``SOURCE``"
+#
+# File: ../src/index.rst, line: 20
+msgid "``CLIENTINFO``"
+msgstr "``CLIENTINFO``"
+#
+# File: ../src/index.rst, line: 21
+msgid "``ERRMSG``"
+msgstr "``ERRMSG``"
+#
+# File: ../src/index.rst, line: 22
+msgid "``PING``"
+msgstr "``PING``"
+#
+# File: ../src/index.rst, line: 23
+msgid "``TIME``"
+msgstr "``TIME``"
+#
+# File: ../src/index.rst, line: 25
+msgid ""
+"For each type of CTCP request, you can choose to use either the default "
+"response to this request (as provided by this module), to use a static string "
+"(see the documentation on this module's `configuration`_ for more "
+"information) or you may also suppress the response entirely (meaning the "
+"request gets ignored entirely)."
+msgstr ""
+"For each type of CTCP request, you can choose to use either the default "
+"response to this request (as provided by this module), to use a static string "
+"(see the documentation on this module's `configuration`_ for more "
+"information) or you may also suppress the response entirely (meaning the "
+"request gets ignored entirely)."
+#
+# File: ../src/index.rst, line: 31
+msgid "Contents:"
+msgstr "Contents:"
+#
+# File: ../src/index.rst, line: 42
+msgid "Current status on http://travis-ci.org/: |travis|"
+msgstr "Current status on http://travis-ci.org/: |travis|"

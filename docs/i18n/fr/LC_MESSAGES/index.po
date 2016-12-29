@@ -1,0 +1,64 @@
+# French translations for Erebot_Module_CtcpResponder package.
+# Copyright (C) 2011-2016, Erebot
+# This file is distributed under the same license as the Erebot_Module_CtcpResponder package.
+# Automatically generated, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Erebot_Module_CtcpResponder 1.0.x-dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-29 22:11+0100\n"
+"PO-Revision-Date: 2016-12-29 22:11+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#
+msgid "Welcome to the documentation for Erebot_Module_CtcpResponder!"
+msgstr ""
+#
+msgid ""
+"Erebot_Module_CtcpResponder is a module for `Erebot`_ that responds to :abbr:"
+"`CTCP (Client-To-Client Protocol)` requests."
+msgstr ""
+#
+msgid "The following request types are currently supported by this module:"
+msgstr ""
+#
+msgid "``FINGER``"
+msgstr ""
+#
+msgid "``VERSION``"
+msgstr ""
+#
+msgid "``SOURCE``"
+msgstr ""
+#
+msgid "``CLIENTINFO``"
+msgstr ""
+#
+msgid "``ERRMSG``"
+msgstr ""
+#
+msgid "``PING``"
+msgstr ""
+#
+msgid "``TIME``"
+msgstr ""
+#
+msgid ""
+"For each type of CTCP request, you can choose to use either the default "
+"response to this request (as provided by this module), to use a static string "
+"(see the documentation on this module's `configuration`_ for more "
+"information) or you may also suppress the response entirely (meaning the "
+"request gets ignored entirely)."
+msgstr ""
+#
+msgid "Contents:"
+msgstr ""
+#
+msgid "Current status on http://travis-ci.org/: |travis|"
+msgstr ""

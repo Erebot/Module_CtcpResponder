@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011-2016, Erebot
+# This file is distributed under the same license as the Erebot_Module_CtcpResponder package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Erebot_Module_CtcpResponder 1.0.x-dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-29 22:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+#
+# File: ../src/Configuration.rst, line: 10
+msgid "Configuration"
+msgstr "Configuration"
+#
+# File: ../src/Configuration.rst, line: 15
+msgid "Options"
+msgstr "Options"
+#
+# File: ../src/Configuration.rst, line: 17
+msgid "This module provides several configuration options."
+msgstr "This module provides several configuration options."
+#
+# File: ../src/Configuration.rst, line: 0
+msgid "Options for |project|"
+msgstr "Options for |project|"
+#
+# File: ../src/Configuration.rst, line: 22
+msgid "Name"
+msgstr "Name"
+#
+# File: ../src/Configuration.rst, line: 22
+msgid "Type"
+msgstr "Type"
+#
+# File: ../src/Configuration.rst, line: 22
+msgid "Default value"
+msgstr "Default value"
+#
+# File: ../src/Configuration.rst, line: 22
+msgid "Description"
+msgstr "Description"
+#
+# File: ../src/Configuration.rst, line: 25
+msgid "allow_chan_ctcp"
+msgstr "allow_chan_ctcp"
+#
+# File: ../src/Configuration.rst, line: 25
+msgid "boolean"
+msgstr "boolean"
+#
+# File: ../src/Configuration.rst, line: 25
+msgid "TRUE"
+msgstr "TRUE"
+#
+# File: ../src/Configuration.rst, line: 25
+msgid ""
+"Whether the bot should respond to CTCP requests sent to IRC channels. If set "
+"to FALSE, the bot will only respond to requests which are directly sent to it."
+msgstr ""
+"Whether the bot should respond to CTCP requests sent to IRC channels. If set "
+"to FALSE, the bot will only respond to requests which are directly sent to it."
+#
+# File: ../src/Configuration.rst, line: 33
+msgid "ctcp_*"
+msgstr "ctcp_*"
+#
+# File: ../src/Configuration.rst, line: 33
+msgid "string"
+msgstr "string"
+#
+# File: ../src/Configuration.rst, line: 33
+msgid "See notes"
+msgstr "See notes"
+#
+# File: ../src/Configuration.rst, line: 33
+msgid "The static text to use in a reply to a CTCP request of type \"*\"."
+msgstr "The static text to use in a reply to a CTCP request of type \"*\"."
+#
+# File: ../src/Configuration.rst, line: 39
+msgid "Notes:"
+msgstr "Notes:"
+#
+# File: ../src/Configuration.rst, line: 41
+msgid ""
+"You may use several \"ctcp_*\" parameters for the different CTCP requests you "
+"want the bot to handle."
+msgstr ""
+"You may use several \"ctcp_*\" parameters for the different CTCP requests you "
+"want the bot to handle."
+#
+# File: ../src/Configuration.rst, line: 43
+msgid ""
+"Using an empty string as the value for \"ctcp_*\" makes the bot ignore CTCP "
+"requests of that type."
+msgstr ""
+"Using an empty string as the value for \"ctcp_*\" makes the bot ignore CTCP "
+"requests of that type."
+#
+# File: ../src/Configuration.rst, line: 45
+msgid ""
+"The \"*\" part of \"ctcp_*\" is case-sensitive. The usual CTCP requests have "
+"their name written in uppercase (``VERSION``, ``TIME``, ``PING``, ...)."
+msgstr ""
+"The \"*\" part of \"ctcp_*\" is case-sensitive. The usual CTCP requests have "
+"their name written in uppercase (``VERSION``, ``TIME``, ``PING``, ...)."
+#
+# File: ../src/Configuration.rst, line: 48
+msgid ""
+"By default, this module handles a few generic CTCP requests, listed in the "
+"table below:"
+msgstr ""
+"By default, this module handles a few generic CTCP requests, listed in the "
+"table below:"
+#
+# File: ../src/Configuration.rst, line: 95
+msgid "Example"
+msgstr "Example"
+#
+# File: ../src/Configuration.rst, line: 97
+msgid ""
+"Here, we make the bot ignore ``FINGER`` and ``ERRMSG`` requests, we replace "
+"the default ``VERSION`` reply and we add a response to a custom type of CTCP "
+"called ``USERINFO`` (which is in fact a type most IRC clients support)."
+msgstr ""
+"Here, we make the bot ignore ``FINGER`` and ``ERRMSG`` requests, we replace "
+"the default ``VERSION`` reply and we add a response to a custom type of CTCP "
+"called ``USERINFO`` (which is in fact a type most IRC clients support)."

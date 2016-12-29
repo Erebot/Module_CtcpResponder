@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011-2016, Erebot
+# This file is distributed under the same license as the Erebot_Module_CtcpResponder package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Erebot_Module_CtcpResponder 1.0.x-dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-29 22:11+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/Configuration.rst:10
+msgid "Configuration"
+msgstr ""
+
+#: ../src/Configuration.rst:15
+msgid "Options"
+msgstr ""
+
+#: ../src/Configuration.rst:17
+msgid "This module provides several configuration options."
+msgstr ""
+
+#: ../src/Configuration.rst:0
+msgid "Options for |project|"
+msgstr ""
+
+#: ../src/Configuration.rst:22
+msgid "Name"
+msgstr ""
+
+#: ../src/Configuration.rst:22
+msgid "Type"
+msgstr ""
+
+#: ../src/Configuration.rst:22
+msgid "Default value"
+msgstr ""
+
+#: ../src/Configuration.rst:22
+msgid "Description"
+msgstr ""
+
+#: ../src/Configuration.rst:25
+msgid "allow_chan_ctcp"
+msgstr ""
+
+#: ../src/Configuration.rst:25
+msgid "boolean"
+msgstr ""
+
+#: ../src/Configuration.rst:25
+msgid "TRUE"
+msgstr ""
+
+#: ../src/Configuration.rst:25
+msgid "Whether the bot should respond to CTCP requests sent to IRC channels. If set to FALSE, the bot will only respond to requests which are directly sent to it."
+msgstr ""
+
+#: ../src/Configuration.rst:33
+msgid "ctcp_*"
+msgstr ""
+
+#: ../src/Configuration.rst:33
+msgid "string"
+msgstr ""
+
+#: ../src/Configuration.rst:33
+msgid "See notes"
+msgstr ""
+
+#: ../src/Configuration.rst:33
+msgid "The static text to use in a reply to a CTCP request of type \"*\"."
+msgstr ""
+
+#: ../src/Configuration.rst:39
+msgid "Notes:"
+msgstr ""
+
+#: ../src/Configuration.rst:41
+msgid "You may use several \"ctcp_*\" parameters for the different CTCP requests you want the bot to handle."
+msgstr ""
+
+#: ../src/Configuration.rst:43
+msgid "Using an empty string as the value for \"ctcp_*\" makes the bot ignore CTCP requests of that type."
+msgstr ""
+
+#: ../src/Configuration.rst:45
+msgid "The \"*\" part of \"ctcp_*\" is case-sensitive. The usual CTCP requests have their name written in uppercase (``VERSION``, ``TIME``, ``PING``, ...)."
+msgstr ""
+
+#: ../src/Configuration.rst:48
+msgid "By default, this module handles a few generic CTCP requests, listed in the table below:"
+msgstr ""
+
+#: ../src/Configuration.rst:95
+msgid "Example"
+msgstr ""
+
+#: ../src/Configuration.rst:97
+msgid "Here, we make the bot ignore ``FINGER`` and ``ERRMSG`` requests, we replace the default ``VERSION`` reply and we add a response to a custom type of CTCP called ``USERINFO`` (which is in fact a type most IRC clients support)."
+msgstr ""
+
