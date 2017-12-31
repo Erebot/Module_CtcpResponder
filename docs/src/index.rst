@@ -26,7 +26,6 @@ Contents:
     :maxdepth: 2
 
     Prerequisites
-    generic/Installation
     Configuration
     Usage
 
