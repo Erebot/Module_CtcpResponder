@@ -43,7 +43,7 @@ class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\He
     {
         if ($flags & self::RELOAD_HANDLERS) {
             $handler = new \Erebot\EventHandler(
-                \Erebot\CallableWrapper::wrap(array($this, 'handleCtcp')),
+                array($this, 'handleCtcp'),
                 new \Erebot\Event\Match\Type(
                     '\\Erebot\\Interfaces\\Event\\Base\\CtcpMessage'
                 )
@@ -66,9 +66,7 @@ class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\He
                 'TIME',
             );
             foreach ($types as $type) {
-                $this->supportedTypes[$type] = \Erebot\CallableWrapper::wrap(
-                    array($this, 'ctcp'.$type)
-                );
+                $this->supportedTypes[$type] = array($this, "ctcp$type");
             }
         }
     }
