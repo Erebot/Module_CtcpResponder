@@ -243,7 +243,7 @@ class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\He
      */
     public function ctcpSOURCE(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
-        return "https://github.com/Erebot/Erebot_Module_CtcpResponder";
+        return "https://github.com/Erebot/";
     }
 
     /**
@@ -259,7 +259,7 @@ class CtcpResponder extends \Erebot\Module\Base implements \Erebot\Interfaces\He
      */
     public function ctcpCLIENTINFO(\Erebot\Interfaces\Event\Base\CtcpMessage $event)
     {
-        return "http://www.erebot.net/";
+        return "https://www.erebot.net/";
     }
 
     /**
