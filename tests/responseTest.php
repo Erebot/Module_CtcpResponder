@@ -194,7 +194,7 @@ extends Erebot_Testenv_Module_TestCase
         $this->_module->handleCtcp($this->_eventHandler, $event);
         $this->assertSame(1, count($this->_outputBuffer));
         $this->assertEquals(
-            "NOTICE #test :\001SOURCE https://github.com/Erebot/Erebot_Module_CtcpResponder\001",
+            "NOTICE #test :\001SOURCE https://github.com/Erebot/\001",
             $this->_outputBuffer[0]
         );
     }
